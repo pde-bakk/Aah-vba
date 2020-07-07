@@ -40,7 +40,7 @@ With ActiveSheet.PivotTables("Draaitabel3").PivotFields("WIJK")
             MkDir subpath
         End If
         
-        naam = path & Wijk & " - Kwartaalrapport " & Kwartaal & ".pdf"
+        naam = subpath & Wijk & " - Kwartaalrapport " & Kwartaal & ".pdf"
         Debug.Print "naam is " & naam
         ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=naam, _
         Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
