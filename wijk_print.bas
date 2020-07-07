@@ -29,7 +29,7 @@ With ActiveSheet.PivotTables("Draaitabel3").PivotFields("WIJK")
         Debug.Print cur; Wijk; Date
         
         Sheets("Wijk").Select
-        subpath = "Q:\Dashboards\" & "Newrapports" & "\Wijken\"
+        subpath = "Q:\Dashboards\" & "Newrapports" & "\" & Wijk
         path = "Q:\Dashboards\" & "Newrapports"
         Folder = Dir(path, vbDirectory)
         If Folder = vbNullString Then
