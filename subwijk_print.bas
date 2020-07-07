@@ -11,6 +11,7 @@ Sheets("Wijkselectie").Select
 Dim l As Long
 Dim cur As Long
 Dim Subwijk As String
+Dim Wijk As String
 Dim naam As String
 Dim path As String
 Dim subpath As String
@@ -26,10 +27,10 @@ With ActiveSheet.PivotTables("Draaitabel3").PivotFields("SUBWIJK")
     
     For cur = 1 To l
         Subwijk = .PivotItems(cur).Name
-        Debug.Print cur; Subwijk; Date
-        
+        Debug.Print cur; Subwijk
+        Wijk = Range("B12")
         Sheets("Subwijk").Select
-        subpath = "Q:\Dashboards\" & "Newrapports" & "\Subwijken\"
+        subpath = "Q:\Dashboards\" & "Newrapports" & "\" & Wijk
         path = "Q:\Dashboards\" & "Newrapports"
         Folder = Dir(path, vbDirectory)
         If Folder = vbNullString Then
@@ -39,8 +40,8 @@ With ActiveSheet.PivotTables("Draaitabel3").PivotFields("SUBWIJK")
         If Folder = vbNullString Then
             MkDir subpath
         End If
-        
-        naam = subpath & Subwijk & " - Kwartaalrapport " & Kwartaal & ".pdf"
+
+        naam = subpath & "\" & Subwijk & " - Kwartaalrapport " & Kwartaal & ".pdf"
         Debug.Print "naam is " & naam
         ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=naam, _
         Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
