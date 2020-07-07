@@ -12,6 +12,9 @@ Dim l As Long
 Dim cur As Long
 Dim Wijk As String
 Dim naam As String
+Dim path As String
+Dim subpath As String
+Dim Folder As String
 
 l = ActiveSheet.PivotTables("Draaitabel3").PivotFields("WIJK").PivotItems.Count
 
@@ -23,17 +26,26 @@ With ActiveSheet.PivotTables("Draaitabel3").PivotFields("WIJK")
     
     For cur = 1 To l
         Wijk = .PivotItems(cur).Name
-        Debug.Print cur; Wijk
+        Debug.Print cur; Wijk; Date
         
         Sheets("Wijk").Select
-        naam = "Q:\Dashboards\Newrapports\Wijken\" & Wijk & " - Kwartaalrapport " & Kwartaal & ".pdf"
+        subpath = "Q:\Dashboards\" & "Newrapports" & "\Wijken\"
+        path = "Q:\Dashboards\" & "Newrapports"
+        Folder = Dir(path, vbDirectory)
+        If Folder = vbNullString Then
+            MkDir path
+        End If
+        Folder = Dir(subpath, vbDirectory)
+        If Folder = vbNullString Then
+            MkDir subpath
+        End If
+        
+        naam = path & Wijk & " - Kwartaalrapport " & Kwartaal & ".pdf"
         Debug.Print "naam is " & naam
-        ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:="Q:\Dashboards\Newrapports\Wijken\" & Wijk & " - Kwartaalrapport " & Kwartaal & ".pdf", _
+        ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=naam, _
         Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
         :=False, OpenAfterPublish:=False
-  '      Sheets("Wijk").Select
-   '     ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:="Newrapports\Wijken\" & Wijk & " - Kwartaalrapport " & Kwartaal & ".pdf", _
-        Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas:=False, OpenAfterPublish:=False
+        
         Sheets("Wijkselectie").Select
         
         If cur + 1 <= l Then
