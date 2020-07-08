@@ -1,78 +1,67 @@
-Sub Wijk_select_dashboards()
+Sub Wijk_dashboards()
 '
-' Wijk_select_dashboards Macro
-' Ik loop over m'n wijkselects heen, en print de dashboards.
+' Wijk_dashboards Macro
 '
-'
-Dim Jaar As String
+Application.DisplayAlerts = False
 Dim Kwartaal As String
-Dim Path As String
-Dim Folder As String
-
 Sheets("Chart_data").Select
 Kwartaal = Range("AC4")
-    Sheets("Wijkselectie").Select
+
+Sheets("Wijkselectie").Select
+Dim l As Long
+Dim cur As Long
+Dim Wijk As String
+Dim naam As String
+Dim Path As String
+Dim subpath As String
+Dim Folder As String
+
+l = ActiveSheet.PivotTables("Draaitabel3").PivotFields("WIJK").PivotItems.Count
+
+With ActiveSheet.PivotTables("Draaitabel3").PivotFields("WIJK")
+    .PivotItems(1).Visible = True
+    For cur = 2 To l
+        .PivotItems(cur).Visible = False
+    Next cur
     
-    Path = "Q:\Dashboards\" & "Newrapports" & "\" & "Wijkoverzichten"
-    Folder = Dir(Path, vbDirectory)
-    If Folder = vbNullString Then
-        MkDir Path
-    End If
+    For cur = 1 To l
+        Wijk = .PivotItems(cur).Name
+        Debug.Print cur; Wijk; Date
+        
+        Sheets("Wijk").Select
+        subpath = "Q:\Dashboards\" & "Newrapports" & "\" & Wijk
+        Path = "Q:\Dashboards\" & "Newrapports"
+        Folder = Dir(Path, vbDirectory)
+        If Folder = vbNullString Then
+            MkDir Path
+        End If
+        Folder = Dir(subpath, vbDirectory)
+        If Folder = vbNullString Then
+            MkDir subpath
+        End If
+        
+        naam = subpath & Wijk & "\" & " - Kwartaalrapport " & Kwartaal & ".pdf"
+        Debug.Print "naam is " & naam
+        ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=naam, _
+        Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
+        :=False, OpenAfterPublish:=False
+        
+        Sheets("Wijkselectie").Select
+        
+        If cur + 1 <= l Then
+            .PivotItems(cur + 1).Visible = True
+            .PivotItems(cur).Visible = False
+            Debug.Print .PivotItems(cur).Name & " is now False " & .PivotItems(cur + 1).Name & " is now True!"
+        End If
+        
+        
+    Next cur
     
-    With ActiveSheet.PivotTables("Draaitabel3").PivotFields("WIJK_SELECT")
-        .PivotItems("01_BINNEN").Visible = True
-        .PivotItems("02_BUITEN").Visible = False
-        .PivotItems("99_NIET").Visible = False
-        .PivotItems("(blank)").Visible = False
-    End With
-    Sheets("Binnen-Buitendering").Select
-        ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=Path & "\" & "Amsterdam binnen de ring - Kwartaalrapport " & Kwartaal & ".pdf", _
-        Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas:=False, OpenAfterPublish:=False
-    Sheets("Wijkselectie").Select
-    With ActiveSheet.PivotTables("Draaitabel3").PivotFields("WIJK_SELECT")
-        .PivotItems("02_BUITEN").Visible = True
-        .PivotItems("01_BINNEN").Visible = False
-        .PivotItems("99_NIET").Visible = False
-        .PivotItems("(blank)").Visible = False
-    End With
-    Sheets("Binnen-Buitendering").Select
-    ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=Path & "\" & "Amsterdam buiten de ring - Kwartaalrapport " & Kwartaal & ".pdf" _
-        , Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
-        :=False, OpenAfterPublish:=False
-    Sheets("Wijkselectie").Select
-    With ActiveSheet.PivotTables("Draaitabel3").PivotFields("WIJK_SELECT")
-        .PivotItems("01_BINNEN").Visible = True
-        .PivotItems("02_BUITEN").Visible = True
-        .PivotItems("99_NIET").Visible = True
-        .PivotItems("(blank)").Visible = True
-    End With
-    Sheets("Geheel Amsterdam").Select
-    ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=Path & "\" & "Geheel Amsterdam - Kwartaalrapport " & Kwartaal & ".pdf" _
-        , Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
-        :=False, OpenAfterPublish:=False
-        
-    Sheets("Lijst wijken Jaar").Select
-    ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=Path & "\" & "Lijst wijken op jaar - " & Kwartaal & ".pdf" _
-        , Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
-        :=False, OpenAfterPublish:=False
-        
-    Sheets("Lijst wijken kwartaal").Select
-    ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=Path & "\" & "Lijst wijken op kwartaal - " & Kwartaal & ".pdf" _
-        , Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
-        :=False, OpenAfterPublish:=False
-        
-    Sheets("Subwijken tov vorig jaar").Select
-    ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=Path & "\" & "Subwijken tov vorig jaar - " & Kwartaal & ".pdf" _
-        , Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
-        :=False, OpenAfterPublish:=False
-        
-    Sheets("Subwijken tov vorig kwartaal").Select
-    ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=Path & "\" & "Subwijken tov vorig kwartaal - " & Kwartaal & ".pdf" _
-        , Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
-        :=False, OpenAfterPublish:=False
-    Sheets("Subwijken tov vorig kwartaal").Select
+    For cur = 1 To l
+        Debug.Print cur; .PivotItems(cur).Name
+        .PivotItems(cur).Visible = True
+    Next cur
     
-    ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=Path & "\" & "Subwijken tov vorig kwartaal - " & Kwartaal & ".pdf" _
-        , Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
-        :=False, OpenAfterPublish:=False
+End With
+Application.DisplayAlerts = True
 End Sub
