@@ -1,3 +1,4 @@
+
 Sub Wijk_dashboards()
 '
 ' Wijk_dashboards Macro
@@ -40,13 +41,15 @@ With ActiveSheet.PivotTables("Draaitabel3").PivotFields("WIJK")
             MkDir subpath
         End If
         
-        naam = subpath & Wijk & " - Kwartaalrapport " & Kwartaal & ".pdf"
+        naam = subpath & "\" & Wijk & " - Kwartaalrapport " & Kwartaal & ".pdf"
         Debug.Print "naam is " & naam
         ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=naam, _
         Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
         :=False, OpenAfterPublish:=False
         
         Sheets("Wijkselectie").Select
+        
+        Miljoenen Wijk, subpath
         
         If cur + 1 <= l Then
             .PivotItems(cur + 1).Visible = True
